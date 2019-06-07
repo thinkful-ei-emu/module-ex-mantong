@@ -1,5 +1,5 @@
 /* global store, cuid */
-
+'use strict';
 // eslint-disable-next-line no-unused-vars
 const shoppingList = (function(){
 
@@ -30,6 +30,7 @@ const shoppingList = (function(){
   
   function generateShoppingItemsString(shoppingList) {
     const items = shoppingList.map((item) => generateItemElement(item));
+    // the 'join' here is optional. included for clarity
     return items.join('');
   }
   
