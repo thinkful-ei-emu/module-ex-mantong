@@ -1,25 +1,13 @@
 'use strict';
 
 const STORE = [
-  
   {id: cuid(), name: 'apples', checked: false},
   {id: cuid(), name: 'oranges', checked: false},
   {id: cuid(), name: 'milk', checked: true},
   {id: cuid(), name: 'bread', checked: false}
-  
-  //sortBy:'alpha'
 ];
-// function changeSortBy(sortValue){
-//   STORE.sortBy =sortValue;
-// }
 
-// function handleChangeSortBy(){
-//   $ ('#js-shopping-list-sortby').change(event =>{
-//     const userValue = event.target.value;
-//     changeSortBy(userValue);
-//     renderShoppingList();
-//   })
-// }
+
 function generateItemElement(item) {
   return `
     <li data-item-id="${item.id}">
@@ -46,13 +34,6 @@ function generateShoppingItemsString(shoppingList) {
 
 
 function renderShoppingList() {
-  // let sortedItems =[...STORE.itmes];
-  // if(STORE.sortBy ==='alpha'){
-  //   sortedItems.sort((a,b) => a.name >b.name ? 1 : -1);
-  // }
-  // else if(STORE.sortBy ==='time'){
-  //   sortedItems.sort((a,b) => a.createdAt < b.createdAt ? 1 :-1);
-  // }
   // render the shopping list in the DOM
   console.log('`renderShoppingList` ran');
   const shoppingListItemsString = generateShoppingItemsString(STORE);
@@ -100,36 +81,32 @@ function handleItemCheckClicked() {
   });
 }
 
-// function deleteListItem(itemId) {
-//   console.log('delete item with id ' + itemId + 'from shopping');
-//   const itemIndex = STORE.findIndex(item => item.id === itemId);
-//   STORE.splice(itemIndex,1);
-// }
-// function handleDeleteItemClicked() {
-//   // this function will be responsible for when users want to delete a shopping list
-//   $('.js-shopping-list').on('click', '.js-item-toggle', event => {
-//     console.log('`handleDeleteItemClicked` ran');
-//     const itemIndex = getItemIdFromElement(event.currentTarget);
-//     deleteListItem(itemIndex);
-//     renderShoppingList();
-//   });
-//   //console.log('`handleDeleteItemClicked` ran')
-// }
 
+// name says it all. responsible for deleting a list item.
 function deleteListItem(itemId) {
-  console.log('delete item with id ' + itemId + 'from shopping');
+  //console.log(`Deleting item with id  ${itemId} from shopping list`)
+
+  // as with `addItemToShoppingLIst`, this function also has the side effect of
+  // mutating the global STORE value.
+  //
+  // First we find the index of the item with the specified id using the native
+  // Array.prototype.findIndex() method. Then we call `.splice` at the index of 
+  // the list item we want to remove, with a removeCount of 1.
   const itemIndex = STORE.findIndex(item => item.id === itemId);
   STORE.splice(itemIndex, 1);
 }
+
+
 function handleDeleteItemClicked() {
-  // this function will be responsible for when users want to delete a shopping list
-  $('.js-shopping-list').on('click', '.js-item-toggle', event => {
-    console.log('`handleDeleteItemClicked` ran');
+  // like in `handleItemCheckClicked`, we use event delegation
+  $('.js-shopping-list').on('click', '.js-item-delete', event => {
+    // get the index of the item in STORE
     const itemIndex = getItemIdFromElement(event.currentTarget);
+    // delete the item
     deleteListItem(itemIndex);
+    // render the updated shopping list
     renderShoppingList();
   });
-  //console.log('`handleDeleteItemClicked` ran')
 }
 
 // this function will be our callback when the page loads. it's responsible for
@@ -141,7 +118,6 @@ function handleShoppingList() {
   handleNewItemSubmit();
   handleItemCheckClicked();
   handleDeleteItemClicked();
-  
 }
 
 // when the page loads, call `handleShoppingList`
