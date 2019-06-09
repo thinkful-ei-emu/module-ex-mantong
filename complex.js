@@ -1,17 +1,15 @@
-/* global $,cuid */
+/* global cuid, $*/
+//this is a more complex store
 'use strict';
 
-const STORE = {
-  items: [
+const STORE ={
+  items:[
     {id: cuid(), name: 'apples', checked: false},
     {id: cuid(), name: 'oranges', checked: false},
     {id: cuid(), name: 'milk', checked: true},
     {id: cuid(), name: 'bread', checked: false}
   ],
-  hideCompleted: false,
-  searchTerm: null,
 };
-
 
 function generateItemElement(item) {
   return `
@@ -41,27 +39,7 @@ function generateShoppingItemsString(shoppingList) {
 function renderShoppingList() {
   // render the shopping list in the DOM
   console.log('`renderShoppingList` ran');
-  // set up a copy of the store's items in a local variable that we will reassign to a new
-  // version if any filtering of the list occurs
-  let filteredItems = STORE.items;
-
-  // if the `hideCompleted` property is true, then we want to reassign filteredItems to a version
-  // where ONLY items with a "checked" property of false are included
-  if (STORE.hideCompleted) {
-    filteredItems = filteredItems.filter(item => !item.checked);
-  }
-  // Make sure the search form input matches the current STORE entry
-  $('.js-search-term').val(STORE.searchTerm);
-
-  // if `searchTerm` property is not null, then we want to reassign filteredItems to a version that
-  // scans the item name for the searchTerm substring
-  if (STORE.searchTerm) {
-    filteredItems = filteredItems.filter(item => item.name.includes(STORE.searchTerm));
-  }
-  // at this point, all filtering work has been done (or not done, if that's the current settings), so
-  // we send our `filteredItems` into our HTML generation function 
-  const shoppingListItemsString = generateShoppingItemsString(filteredItems);
-  
+  const shoppingListItemsString = generateShoppingItemsString(STORE);
 
   // insert that HTML into the DOM
   $('.js-shopping-list').html(shoppingListItemsString);
@@ -96,7 +74,6 @@ function getItemIdFromElement(item) {
     .closest('li')
     .data('item-id');
 }
-
 
 function handleItemCheckClicked() {
   $('.js-shopping-list').on('click', '.js-item-toggle', event => {
@@ -134,40 +111,7 @@ function handleDeleteItemClicked() {
     renderShoppingList();
   });
 }
-// Toggles the STORE.hideCompleted property
-function toggleHideFilter() {
-  STORE.hideCompleted = !STORE.hideCompleted;
-}
 
-// Places an event listener on the checkbox for hiding completed items
-function handleToggleHideFilter() {
-  $('.js-hide-completed-toggle').on('click', () => {
-    toggleHideFilter();
-    renderShoppingList();
-  });
-}
-// Sets STORE.searchTerm to inputted param
-function setSearchTerm(searchTerm) {
-  STORE.searchTerm = searchTerm;
-}
-
-// Places an event listener on the search form to filter the item list
-function handleSearchSubmit() {
-  $('#js-search-term-form').on('submit', event => {
-    event.preventDefault();
-    const searchTerm = $('.js-search-term').val();
-    setSearchTerm(searchTerm);
-    renderShoppingList();
-  });
-}
-
-// Places an event listener on the search term clear button to clear the input
-function handleSearchClear() {
-  $('#search-form-clear').on('click', () => {
-    setSearchTerm('');
-    renderShoppingList();
-  });
-}
 // this function will be our callback when the page loads. it's responsible for
 // initially rendering the shopping list, and activating our individual functions
 // that handle new item submission and user clicks on the "check" and "delete" buttons
@@ -177,10 +121,6 @@ function handleShoppingList() {
   handleNewItemSubmit();
   handleItemCheckClicked();
   handleDeleteItemClicked();
-  handleToggleHideFilter();
-  handleSearchSubmit();
-  handleSearchClear();
-  
 }
 
 // when the page loads, call `handleShoppingList`

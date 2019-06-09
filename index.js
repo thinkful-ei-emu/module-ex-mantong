@@ -1,3 +1,4 @@
+/* global $,cuid */
 'use strict';
 
 const STORE = [
